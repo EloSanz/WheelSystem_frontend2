@@ -6,7 +6,6 @@ import "./style-DONOTUSE.css";
 
 const WebCamCapture = () => {
   const webcamRef = useRef(null);
-  const [image, setImage] = useState(null);
   const [videoURL, setVideoURL] = useState(null);
   const [hasError, setHasError] = useState(false);
   const [permissionGranted, setPermissionGranted] = useState(false);
@@ -90,45 +89,6 @@ const WebCamCapture = () => {
       setRecording(false);
     }
   };
-
-  const handleCapture = async (event) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-
-      const formData = new FormData();
-      formData.append("image", file);
-
-      try {
-        const response = await axios.post("/api/v1/predict", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        console.log(response.data);
-        alert("Image saved successfully");
-      } catch (error) {
-        console.error("Error uploading the image:", error);
-        alert("Error uploading the image");
-      }
-    } else {
-      setHasError(true);
-    }
-  };
-
-  // const handleClear = async () => { // the clear button is removed
-  //   try {
-  //     await axios.post("/api/v2/clear", [], {});
-  //     alert("Cleared");
-  //   } catch (error) {
-  //     console.error("Error clearing model:", error);
-  //     alert("Failed to clear the model.");
-  //   }
-  // };
 
   const startWebcam = async () => {
     try {
@@ -312,23 +272,6 @@ const WebCamCapture = () => {
             playsInline
             style={{ width: "100%", maxHeight: "400px" }}
           />
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleCapture}
-            className="mt-2"
-          />
-          {image && (
-            <div className="mt-2">
-              <p>Captured Image:</p>
-              <img
-                src={image}
-                alt="Captured"
-                style={{ width: "100%", maxHeight: "400px" }}
-              />
-            </div>
-          )}
         </div>
       )}
     </Container>
